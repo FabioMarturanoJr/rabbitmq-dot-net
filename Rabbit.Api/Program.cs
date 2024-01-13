@@ -1,15 +1,43 @@
+using MassTransit;
+using Rabbit.Api.Configs;
+using Rabbit.Api.Consumers;
+using Rabbit.Api.Domain;
+using Rabbit.Api.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Config
+var massTransitConfigs = builder.Configuration.GetSection(nameof(MassTransitConfigs)).Get<MassTransitConfigs>();
+
+// Service
+builder.Services.AddScoped<IBusService, BusService>();
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<MessageConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host($"rabbitmq://{massTransitConfigs?.host}", h =>
+        {
+            h.Username(massTransitConfigs?.User);
+            h.Password(massTransitConfigs?.Pwd);
+        });
+        cfg.ReceiveEndpoint(Queues.Defaut, ep =>
+        {
+            ep.ConcurrentMessageLimit = 2;
+            ep.PrefetchCount = 10;
+            ep.UseMessageRetry(r => r.Interval(2, 10000));
+            ep.ConfigureConsumer<MessageConsumer>(context);
+        });
+    });
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
