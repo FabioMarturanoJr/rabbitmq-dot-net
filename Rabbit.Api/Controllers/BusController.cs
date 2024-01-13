@@ -6,9 +6,9 @@ namespace Rabbit.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RabbitController(IRabbitService rabbitService) : ControllerBase
+    public class BusController(IBusService BusService) : ControllerBase
     {
-        private readonly IRabbitService _rabbitService = rabbitService;
+        private readonly IBusService _BusService = BusService;
 
         [HttpPost("[action]")]
         public ActionResult<string> EnviarMensagem(int TotalMessagem)
@@ -21,7 +21,7 @@ namespace Rabbit.Api.Controllers
                     DataEnvio = DateTime.Now,
                 });
             }
-            _rabbitService.Send(messages);
+            _BusService.Send(messages);
             return Ok();
         }
     }

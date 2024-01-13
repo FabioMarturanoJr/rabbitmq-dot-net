@@ -2,7 +2,7 @@
 
 namespace Rabbit.Api.Service;
 
-public interface IRabbitService
+public interface IBusService
 {
     public Task Send(List<Message> messages);
 }

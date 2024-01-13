@@ -11,21 +11,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Config
-var rabbitConfigSection = builder.Configuration.GetSection(nameof(RabbitConfigs));
-var rabbitConfigs = rabbitConfigSection.Get<RabbitConfigs>();
+var massTransitConfigs = builder.Configuration.GetSection(nameof(MassTransitConfigs)).Get<MassTransitConfigs>();
 
 // Service
-builder.Services.AddScoped<IRabbitService, RabbitService>();
+builder.Services.AddScoped<IBusService, BusService>();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<MessageConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host($"rabbitmq://{rabbitConfigs?.host}", h =>
+        cfg.Host($"rabbitmq://{massTransitConfigs?.host}", h =>
         {
-            h.Username(rabbitConfigs?.User);
-            h.Password(rabbitConfigs?.Pwd);
+            h.Username(massTransitConfigs?.User);
+            h.Password(massTransitConfigs?.Pwd);
         });
         cfg.ReceiveEndpoint(Queues.Defaut, ep =>
         {
