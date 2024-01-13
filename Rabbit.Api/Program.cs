@@ -29,8 +29,9 @@ builder.Services.AddMassTransit(x =>
         });
         cfg.ReceiveEndpoint(Queues.Defaut, ep =>
         {
+            ep.ConcurrentMessageLimit = 2;
             ep.PrefetchCount = 10;
-            ep.UseMessageRetry(r => r.Interval(2, 100));
+            ep.UseMessageRetry(r => r.Interval(2, 10000));
             ep.ConfigureConsumer<MessageConsumer>(context);
         });
     });

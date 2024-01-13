@@ -5,18 +5,11 @@ using Rabbit.Api.Domain;
 
 namespace Rabbit.Api.Service;
 
-public class RabbitService : IRabbitService
+public class RabbitService(IBus bus, ILogger<RabbitService> logger, IOptions<RabbitConfigs> rabbitConfigs) : IRabbitService
 {
-    private readonly IBus _bus;
-    private readonly ILogger<RabbitService> _logger;
-    private readonly RabbitConfigs _rabbitConfigs;
-
-    public RabbitService(IBus bus, ILogger<RabbitService> logger, IOptions<RabbitConfigs> rabbitConfigs)
-    {
-        _bus = bus;
-        _logger = logger;
-        _rabbitConfigs = rabbitConfigs.Value;
-    }
+    private readonly IBus _bus = bus;
+    private readonly ILogger<RabbitService> _logger = logger;
+    private readonly RabbitConfigs _rabbitConfigs = rabbitConfigs.Value;
 
     public async Task Send(List<Message> messages)
     {

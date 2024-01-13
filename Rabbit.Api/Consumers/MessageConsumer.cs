@@ -1,5 +1,6 @@
 ﻿using MassTransit;
 using Rabbit.Api.Domain;
+using System.Linq;
 
 namespace Rabbit.Api.Consumers;
 
@@ -7,18 +8,21 @@ public class MessageConsumer(ILogger<MessageConsumer> logger) : IConsumer<Messag
 {
     private readonly ILogger<MessageConsumer> _logger = logger;
 
-    public Task Consume(ConsumeContext<Message> context)
+    public async Task Consume(ConsumeContext<Message> context)
     {
         var message = context.Message;
 
-        if (message.Texto.Contains("10"))
+        var rand = new Random();
+        var randomNumber = rand.Next(10).ToString();
+        if (message.Texto.Contains(randomNumber))
         {
-            throw new Exception("Contains 10");
+            throw new Exception($" \"{message.Texto}\" contem: {randomNumber}");
         }
 
-        _logger.LogWarning($"Mensagem: {message.Texto}, HoraMensagem: {message.DataEnvio}, " +
-            $"HoraConsumo: {DateTime.Now}");
+        _logger.LogWarning($"Aguardando Mensagem: \"{message.Texto}\"");
+        await Task.Delay(10000);
+        _logger.LogWarning($"Mensagem: {message.Texto}, HoraMensagem: {message.DataEnvio}, " + $"HoraConsumo: {DateTime.Now}");
 
-        return Task.CompletedTask;
+        // return Task.CompletedTask;
     }
 }
