@@ -1,8 +1,10 @@
 using MassTransit;
+using Quartz;
 using Rabbit.Api.Configs;
 using Rabbit.Api.Consumers;
 using Rabbit.Api.Domain;
 using Rabbit.Api.Service;
+using Rabbit.Api.Service.Job;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +40,20 @@ builder.Services.AddMassTransit(x =>
         });
     });
 });
+
+// Job
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey(nameof(SendMessageJob));
+    q.AddJob<SendMessageJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity($"{nameof(SendMessageJob)}-trigger")
+        .WithCronSchedule(builder.Configuration["JobConfigs:CronExpression"]!));
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 var app = builder.Build();
 
