@@ -1,6 +1,5 @@
 ﻿using MassTransit;
 using Rabbit.Api.Domain;
-using System.Linq;
 
 namespace Rabbit.Api.Consumers;
 
@@ -21,7 +20,7 @@ public class MessageConsumer(ILogger<MessageConsumer> logger) : IConsumer<Messag
 
         _logger.LogWarning($"Aguardando Mensagem: \"{message.Texto}\"");
         await Task.Delay(10000);
-        _logger.LogWarning($"Mensagem: {message.Texto}, HoraMensagem: {message.DataEnvio}, " + $"HoraConsumo: {DateTime.Now}");
+        _logger.LogWarning($"Mensagem: {message.Texto}, Origem: {message.Origem:g}, HoraMensagem: {message.DataEnvio}, " + $"HoraConsumo: {DateTime.Now}");
 
         // return Task.CompletedTask;
     }

@@ -16,10 +16,7 @@ namespace Rabbit.Api.Controllers
             var messages = new List<Message>();
             for (int i = 0; i < TotalMessagem; i++)
             {
-                messages.Add(new Message {
-                    Texto = i.ToString(),
-                    DataEnvio = DateTime.Now,
-                });
+                messages.Add(new Message(i.ToString(), DateTime.Now));
             }
             _BusService.Send(messages);
             return Ok();

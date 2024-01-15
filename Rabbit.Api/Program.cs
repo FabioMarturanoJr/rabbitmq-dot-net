@@ -11,9 +11,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Config
-var massTransitConfigs = builder.Configuration.GetSection(nameof(MassTransitConfigs)).Get<MassTransitConfigs>();
+var massTransitConfigsSection = builder.Configuration.GetSection(nameof(MassTransitConfigs));
+builder.Services.Configure<MassTransitConfigs>(massTransitConfigsSection);
 
 // Service
+var massTransitConfigs = massTransitConfigsSection.Get<MassTransitConfigs>();
+
 builder.Services.AddScoped<IBusService, BusService>();
 builder.Services.AddMassTransit(x =>
 {
@@ -21,7 +24,7 @@ builder.Services.AddMassTransit(x =>
 
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host($"rabbitmq://{massTransitConfigs?.host}", h =>
+        cfg.Host(massTransitConfigs?.host, h =>
         {
             h.Username(massTransitConfigs?.User);
             h.Password(massTransitConfigs?.Pwd);

@@ -2,6 +2,14 @@
 
 public class Message
 {
-  public string Texto { get; set; }
-  public DateTime DataEnvio { get; set; }
+    public Message(string texto, DateTime dataEnvio, Origem origem = Origem.Service)
+    {
+        Texto = texto;
+        DataEnvio = dataEnvio;
+        Origem = origem;
+    }
+
+    public string Texto { get; set; }
+    public DateTime DataEnvio { get; set; }
+    public Origem Origem { get; set; }
 }
