@@ -13,7 +13,7 @@ public class BusService(IBus bus, ILogger<BusService> logger, IOptions<MassTrans
 
     public async Task Send(List<Message> messages)
     {
-        var endpoint = await _bus.GetSendEndpoint(new Uri($"rabbitmq://{_MassTransitConfigs.host}/{Queues.Defaut}"));
+        var endpoint = await _bus.GetSendEndpoint(new Uri($"{_MassTransitConfigs.host}/{Queues.Defaut}"));
         for (int i = 0; i < messages.Count; i++)
         {
             await endpoint.Send(messages[i]);
