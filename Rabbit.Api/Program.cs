@@ -23,6 +23,7 @@ builder.Services.AddScoped<IBusService, BusService>();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<MessageConsumer>();
+    x.AddConsumer<OtherConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -37,6 +38,7 @@ builder.Services.AddMassTransit(x =>
             ep.PrefetchCount = 10;
             ep.UseMessageRetry(r => r.Interval(2, 10000));
             ep.ConfigureConsumer<MessageConsumer>(context);
+            ep.ConfigureConsumer<OtherConsumer>(context);
         });
     });
 });

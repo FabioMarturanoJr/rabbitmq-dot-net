@@ -21,5 +21,17 @@ namespace Rabbit.Api.Controllers
             _BusService.Send(messages);
             return Ok();
         }
+
+        [HttpPost("[action]")]
+        public ActionResult<string> EnviarOutraMensagem(int TotalMessagem)
+        {
+            var messages = new List<Message2>();
+            for (int i = 0; i < TotalMessagem; i++)
+            {
+                messages.Add(new Message2(i.ToString(), DateTime.Now));
+            }
+            _BusService.SendOtherMessage(messages);
+            return Ok();
+        }
     }
 }

@@ -18,8 +18,8 @@ public class MessageConsumer(ILogger<MessageConsumer> logger) : IConsumer<Messag
             throw new Exception($" \"{message.Texto}\" contem: {randomNumber}");
         }
 
-        _logger.LogWarning($"Aguardando Mensagem: \"{message.Texto}\"");
+        _logger.LogWarning($"MessageConsumer - Aguardando Mensagem: \"{message.Texto}\"");
         await Task.Delay(10000);
-        _logger.LogWarning($"Mensagem: {message.Texto}, Origem: {message.Origem:g}, HoraMensagem: {message.DataEnvio}, " + $"HoraConsumo: {DateTime.Now}");
+        _logger.LogWarning($"MessageConsumer - Mensagem: {message.Texto}, Origem: {message.Origem:g}, HoraMensagem: {message.DataEnvio}, " + $"HoraConsumo: {DateTime.Now}");
     }
 }

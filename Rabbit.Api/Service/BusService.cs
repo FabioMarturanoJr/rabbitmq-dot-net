@@ -20,4 +20,14 @@ public class BusService(IBus bus, ILogger<BusService> logger, IOptions<MassTrans
             _logger.LogInformation($"Mensagem \"{i + 1}\" Enviada Com Sucesso");
         }
     }
+
+    public async Task SendOtherMessage(List<Message2> messages)
+    {
+        var endpoint = await _bus.GetSendEndpoint(new Uri($"{_MassTransitConfigs.host}/{Queues.Defaut}"));
+        for (int i = 0; i < messages.Count; i++)
+        {
+            await endpoint.Send(messages[i]);
+            _logger.LogInformation($"Outra Mensagem \"{i + 1}\" Enviada Com Sucesso");
+        }
+    }
 }
