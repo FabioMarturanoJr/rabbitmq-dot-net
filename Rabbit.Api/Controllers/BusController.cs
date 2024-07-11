@@ -11,26 +11,26 @@ namespace Rabbit.Api.Controllers
         private readonly IBusService _BusService = BusService;
 
         [HttpPost("[action]")]
-        public ActionResult<string> EnviarMensagem(int TotalMessagem)
+        public async Task<ActionResult<string>> EnviarMensagem(int TotalMessagem)
         {
             var messages = new List<Message>();
             for (int i = 0; i < TotalMessagem; i++)
             {
                 messages.Add(new Message(i.ToString(), DateTime.Now));
             }
-            _BusService.Send(messages);
+            await _BusService.Send(messages);
             return Ok();
         }
 
         [HttpPost("[action]")]
-        public ActionResult<string> EnviarOutraMensagem(int TotalMessagem)
+        public async Task<ActionResult<string>> EnviarOutraMensagem(int TotalMessagem)
         {
             var messages = new List<Message2>();
             for (int i = 0; i < TotalMessagem; i++)
             {
                 messages.Add(new Message2(i.ToString(), DateTime.Now));
             }
-            _BusService.SendOtherMessage(messages);
+            await _BusService.SendOtherMessage(messages);
             return Ok();
         }
     }
